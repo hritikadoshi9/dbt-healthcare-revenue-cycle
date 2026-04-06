@@ -1,0 +1,213 @@
+version: 2
+
+sources:
+  - name: healthcare
+    description: >
+      Raw healthcare claims and revenue cycle data. This source expects tables
+      following standard EDI 837/835 transaction formats with CMS-1500 and UB-04
+      claim form fields mapped to relational columns.
+    schema: "{{ var('source_schema', 'raw_healthcare') }}"
+    freshness:
+      warn_after: { count: 24, period: hour }
+      error_after: { count: 48, period: hour }
+    loaded_at_field: _loaded_at
+
+    tables:
+      - name: claims
+        description: >
+          Raw insurance claims submitted by providers. Each row represents a single
+          claim line item with procedure codes, diagnosis codes, and billed amounts.
+        columns:
+          - name: claim_id
+            description: Unique identifier for the claim
+            tests:
+              - not_null
+              - unique
+          - name: claim_line_id
+            description: Unique identifier for each line item within a claim
+          - name: patient_id
+            description: Foreign key to the patient
+          - name: provider_id
+            description: Foreign key to the rendering provider (NPI)
+          - name: payer_id
+            description: Foreign key to the insurance payer
+          - name: procedure_code
+            description: CPT or HCPCS procedure code
+          - name: diagnosis_code_primary
+            description: Primary ICD-10 diagnosis code
+          - name: diagnosis_code_secondary
+            description: Secondary ICD-10 diagnosis code (nullable)
+          - name: service_date
+            description: Date the service was rendered
+          - name: submission_date
+            description: Date the claim was submitted to the payer
+          - name: billed_amount
+            description: Amount billed by the provider
+          - name: claim_status
+            description: "Current status: submitted, accepted, denied, paid, appealed"
+          - name: place_of_service_code
+            description: CMS place of service code (e.g., 11=Office, 21=Inpatient)
+          - name: _loaded_at
+            description: Timestamp when the record was loaded into the warehouse
+
+      - name: denials
+        description: >
+          Claim denial records with CARC/RARC reason codes and appeal tracking.
+        columns:
+          - name: denial_id
+            description: Unique identifier for the denial record
+            tests:
+              - not_null
+              - unique
+          - name: claim_id
+            description: Foreign key to the denied claim
+          - name: denial_date
+            description: Date the denial was issued by the payer
+          - name: denial_reason_code
+            description: CARC (Claim Adjustment Reason Code)
+          - name: remark_code
+            description: RARC (Remittance Advice Remark Code)
+          - name: denied_amount
+            description: Dollar amount denied
+          - name: appeal_status
+            description: "Appeal status: none, submitted, in_review, overturned, upheld"
+          - name: appeal_date
+            description: Date appeal was submitted (nullable)
+          - name: appeal_resolution_date
+            description: Date appeal was resolved (nullable)
+          - name: _loaded_at
+            description: Timestamp when the record was loaded
+
+      - name: payments
+        description: >
+          Payment and remittance records from payers (ERA/835 transactions).
+        columns:
+          - name: payment_id
+            description: Unique identifier for the payment
+            tests:
+              - not_null
+              - unique
+          - name: claim_id
+            description: Foreign key to the associated claim
+          - name: payer_id
+            description: Foreign key to the paying entity
+          - name: payment_date
+            description: Date the payment was received
+          - name: paid_amount
+            description: Amount actually paid by the payer
+          - name: allowed_amount
+            description: Payer's allowed amount for the procedure
+          - name: adjustment_amount
+            description: Contractual adjustment amount
+          - name: patient_responsibility
+            description: Amount owed by the patient (copay, coinsurance, deductible)
+          - name: payment_method
+            description: "Payment method: eft, check, virtual_card"
+          - name: check_eft_number
+            description: Check or EFT reference number
+          - name: _loaded_at
+            description: Timestamp when the record was loaded
+
+      - name: providers
+        description: >
+          Provider master data including NPI, specialties, and practice information.
+        columns:
+          - name: provider_id
+            description: Internal provider identifier
+            tests:
+              - not_null
+              - unique
+          - name: npi
+            description: National Provider Identifier (10-digit)
+          - name: provider_name
+            description: Full name of the provider
+          - name: provider_type
+            description: "Provider type: individual, organization"
+          - name: specialty
+            description: Primary medical specialty
+          - name: tax_id
+            description: Tax identification number
+          - name: practice_name
+            description: Name of the practice or facility
+          - name: practice_state
+            description: State where the practice operates
+          - name: is_active
+            description: Whether the provider is currently active
+          - name: _loaded_at
+            description: Timestamp when the record was loaded
+
+      - name: payers
+        description: >
+          Insurance payer master data including plan types and contract details.
+        columns:
+          - name: payer_id
+            description: Unique payer identifier
+            tests:
+              - not_null
+              - unique
+          - name: payer_name
+            description: Name of the insurance company
+          - name: plan_type
+            description: "Plan type: hmo, ppo, epo, pos, medicare, medicaid, commercial"
+          - name: payer_category
+            description: "Category: government, commercial, self_pay"
+          - name: contract_effective_date
+            description: Date the payer contract became effective
+          - name: contract_end_date
+            description: Date the payer contract expires (nullable)
+          - name: contracted_rate_pct
+            description: Contracted reimbursement rate as percentage of billed
+          - name: _loaded_at
+            description: Timestamp when the record was loaded
+
+      - name: patients
+        description: >
+          Patient demographic and insurance coverage information.
+        columns:
+          - name: patient_id
+            description: Unique patient identifier
+            tests:
+              - not_null
+              - unique
+          - name: date_of_birth
+            description: Patient date of birth
+          - name: gender
+            description: Patient gender
+          - name: zip_code
+            description: Patient ZIP code (5-digit)
+          - name: primary_payer_id
+            description: Foreign key to primary insurance payer
+          - name: secondary_payer_id
+            description: Foreign key to secondary insurance payer (nullable)
+          - name: coverage_start_date
+            description: Date primary insurance coverage began
+          - name: coverage_end_date
+            description: Date primary insurance coverage ended (nullable)
+          - name: _loaded_at
+            description: Timestamp when the record was loaded
+
+      - name: procedures
+        description: >
+          Procedure code reference table with CPT/HCPCS codes and fee schedules.
+        columns:
+          - name: procedure_code
+            description: CPT or HCPCS procedure code
+            tests:
+              - not_null
+              - unique
+          - name: procedure_description
+            description: Human-readable description of the procedure
+          - name: procedure_category
+            description: "Category: evaluation, surgical, diagnostic, therapeutic, preventive"
+          - name: code_type
+            description: "Code system: cpt, hcpcs"
+          - name: standard_charge
+            description: Standard charge/fee schedule amount
+          - name: rvu_work
+            description: Work Relative Value Unit
+          - name: rvu_practice
+            description: Practice Expense RVU
+          - name: rvu_malpractice
+            description: Malpractice RVU
+          - name: _loaded_at
+            description: Timestamp when the record was loaded

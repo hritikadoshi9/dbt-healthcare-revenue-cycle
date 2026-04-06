@@ -1,0 +1,58 @@
+name: 'healthcare_revenue_cycle'
+version: '1.0.0'
+config-version: 2
+
+require-dbt-version: [">=1.5.0", "<2.0.0"]
+
+profile: 'healthcare_revenue_cycle'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  # Schema where your raw healthcare data lives
+  source_schema: 'raw_healthcare'
+  # Optional: prefix for source table names
+  source_table_prefix: ''
+  # AR aging bucket thresholds (in days)
+  aging_buckets: [30, 60, 90, 120]
+  # Denial categories mapping override
+  denial_category_override: {}
+
+models:
+  healthcare_revenue_cycle:
+    +materialized: view
+    staging:
+      +materialized: view
+      +schema: staging
+    dimensions:
+      +materialized: table
+      +schema: dimensions
+    facts:
+      +materialized: incremental
+      +schema: facts
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  healthcare_revenue_cycle:
+    +schema: seeds
+    seed_denial_reason_codes:
+      +column_types:
+        denial_code: varchar(10)
+        denial_description: varchar(255)
+        denial_category: varchar(50)
+    seed_payer_contracts:
+      +column_types:
+        payer_id: varchar(20)
+        contract_rate_pct: decimal(5,2)

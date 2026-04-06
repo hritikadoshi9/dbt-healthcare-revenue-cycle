@@ -1,0 +1,40 @@
+denial_code,denial_description,denial_category
+1,Deductible amount,Patient Responsibility
+2,Coinsurance amount,Patient Responsibility
+3,Co-payment amount,Patient Responsibility
+4,Procedure code inconsistent with modifier or missing modifier,Coding Error
+5,Procedure code inconsistent with place of service,Coding Error
+16,Claim lacks information or has submission errors,Missing Information
+18,Duplicate claim or service,Duplicate
+22,Care may be covered by another payer,Coordination of Benefits
+23,Payment adjusted - charges covered under capitation,Contractual
+26,Expenses incurred prior to coverage,Eligibility
+27,Expenses incurred after coverage terminated,Eligibility
+29,Time limit for filing has expired,Timely Filing
+31,Patient cannot be identified as our insured,Eligibility
+32,Our records indicate the patient is not eligible,Eligibility
+33,Insured has no dependent coverage,Eligibility
+35,Lifetime benefit maximum reached,Benefit Limit
+39,Services denied at the time of authorization,Authorization
+45,Charge exceeds fee schedule or maximum allowable,Contractual
+49,Non-covered service because not deemed a medical necessity,Medical Necessity
+50,Non-covered service,Non-Covered Service
+55,Procedure requires prior authorization,Authorization
+96,Non-covered charge,Non-Covered Service
+97,Payment adjusted based on fee schedule,Contractual
+109,Claim not covered by this payer,Eligibility
+119,Benefit maximum for this time period has been reached,Benefit Limit
+136,Failure to obtain prior authorization,Authorization
+151,Payment adjusted: payer deems the information submitted insufficient,Missing Information
+167,Diagnosis is not covered,Non-Covered Service
+170,Payment denied based on medical review,Medical Necessity
+181,Procedure code was invalid on the date of service,Coding Error
+182,Procedure code requires a modifier,Coding Error
+197,Precertification or authorization absent,Authorization
+204,Service not covered unless condition is related to accident,Non-Covered Service
+222,Exceeds number of visits or frequency limitations,Benefit Limit
+226,Information requested was not provided or was insufficient,Missing Information
+227,Information requested is incomplete or invalid,Missing Information
+234,This procedure is not paid separately,Bundling
+236,Procedure or procedure/modifier combination not valid on date of service,Coding Error
+242,Services not provided by network providers,Out of Network

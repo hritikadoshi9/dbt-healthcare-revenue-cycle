@@ -1,0 +1,11 @@
+payer_id,payer_name,plan_type,payer_category,contract_effective_date,contract_end_date,contracted_rate_pct,_loaded_at
+PYR001,Aetna PPO,ppo,commercial,2023-01-01,,78.50,2025-01-01 00:00:00
+PYR002,Blue Cross HMO,hmo,commercial,2023-01-01,,72.00,2025-01-01 00:00:00
+PYR003,UnitedHealthcare PPO,ppo,commercial,2023-06-01,,81.25,2025-01-01 00:00:00
+PYR004,Cigna EPO,epo,commercial,2023-03-01,,74.00,2025-01-01 00:00:00
+PYR005,Humana HMO,hmo,commercial,2023-01-01,,69.50,2025-01-01 00:00:00
+PYR006,Medicare Part B,medicare,government,2023-01-01,,55.00,2025-01-01 00:00:00
+PYR007,Medicaid,medicaid,government,2023-01-01,,42.00,2025-01-01 00:00:00
+PYR008,Kaiser Permanente,hmo,commercial,2023-07-01,,76.00,2025-01-01 00:00:00
+PYR009,Anthem PPO,ppo,commercial,2023-01-01,,79.00,2025-01-01 00:00:00
+PYR010,Molina Healthcare,medicaid,government,2023-04-01,,44.50,2025-01-01 00:00:00

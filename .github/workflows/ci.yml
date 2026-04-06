@@ -1,0 +1,80 @@
+name: dbt CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+env:
+  DBT_PROFILES_DIR: ./ci
+
+jobs:
+  dbt-build-and-test:
+    name: dbt build + test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: dbt_test
+          POSTGRES_PASSWORD: dbt_test
+          POSTGRES_DB: dbt_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install dbt-postgres==1.7.* dbt-expectations dbt-utils
+
+      - name: Create CI profile
+        run: |
+          mkdir -p ci
+          cat > ci/profiles.yml << 'EOF'
+          healthcare_revenue_cycle:
+            target: ci
+            outputs:
+              ci:
+                type: postgres
+                host: localhost
+                port: 5432
+                user: dbt_test
+                pass: dbt_test
+                dbname: dbt_test
+                schema: public
+                threads: 4
+          EOF
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Seed test data
+        run: dbt seed
+
+      - name: Run dbt build (models + tests)
+        run: dbt build --full-refresh
+
+      - name: Generate docs
+        run: dbt docs generate
+
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-docs
+          path: target/
+          retention-days: 7

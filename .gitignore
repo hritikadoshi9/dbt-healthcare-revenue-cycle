@@ -1,0 +1,10 @@
+target/
+dbt_packages/
+dbt_modules/
+logs/
+.user.yml
+profiles.yml
+ci/
+*.pyc
+__pycache__/
+.DS_Store

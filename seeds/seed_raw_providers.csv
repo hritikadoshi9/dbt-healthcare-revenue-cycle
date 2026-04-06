@@ -1,0 +1,21 @@
+provider_id,npi,provider_name,provider_type,specialty,tax_id,practice_name,practice_state,is_active,_loaded_at
+PRV001,1234567890,Dr. Sarah Chen,individual,Internal Medicine,901234567,Lakewood Primary Care,CA,true,2025-01-01 00:00:00
+PRV002,1234567891,Dr. James Wilson,individual,Cardiology,901234568,HeartCare Specialists,CA,true,2025-01-01 00:00:00
+PRV003,1234567892,Dr. Maria Garcia,individual,Orthopedics,901234569,Pacific Orthopedic Group,TX,true,2025-01-01 00:00:00
+PRV004,1234567893,Dr. Robert Kim,individual,Family Medicine,901234570,Valley Family Health,CA,true,2025-01-01 00:00:00
+PRV005,1234567894,Dr. Emily Johnson,individual,Pediatrics,901234571,Sunshine Pediatrics,NY,true,2025-01-01 00:00:00
+PRV006,1234567895,Dr. Michael Brown,individual,General Surgery,901234572,Precision Surgical Associates,FL,true,2025-01-01 00:00:00
+PRV007,1234567896,Dr. Lisa Patel,individual,Dermatology,901234573,Clear Skin Dermatology,CA,true,2025-01-01 00:00:00
+PRV008,1234567897,Dr. David Martinez,individual,Neurology,901234574,BrainHealth Neurology,TX,true,2025-01-01 00:00:00
+PRV009,1234567898,Dr. Jennifer Lee,individual,Oncology,901234575,Hope Cancer Center,NY,true,2025-01-01 00:00:00
+PRV010,1234567899,Dr. William Taylor,individual,Emergency Medicine,901234576,Metro Emergency Physicians,FL,true,2025-01-01 00:00:00
+PRV011,1234567900,Dr. Amanda White,individual,Gastroenterology,901234577,Digestive Health Associates,CA,true,2025-01-01 00:00:00
+PRV012,1234567901,Dr. Christopher Davis,individual,Pulmonology,901234578,Breathe Easy Pulmonology,TX,true,2025-01-01 00:00:00
+PRV013,1234567902,Dr. Rachel Thompson,individual,Endocrinology,901234579,Endocrine Wellness Center,NY,true,2025-01-01 00:00:00
+PRV014,1234567903,Dr. Daniel Anderson,individual,Rheumatology,901234580,Joint Care Rheumatology,FL,true,2025-01-01 00:00:00
+PRV015,1234567904,Dr. Nicole Harris,individual,Radiology,901234581,Advanced Imaging Partners,CA,true,2025-01-01 00:00:00
+PRV016,1234567905,Dr. Kevin Clark,individual,Anesthesiology,901234582,Precision Anesthesia Group,TX,false,2025-01-01 00:00:00
+PRV017,1234567906,Dr. Stephanie Lewis,individual,Orthopedic Surgery,901234583,Elite Orthopedic Surgery,NY,true,2025-01-01 00:00:00
+PRV018,1234567907,Dr. Brian Robinson,individual,Nephrology,901234584,Kidney Care Associates,FL,true,2025-01-01 00:00:00
+PRV019,1234567908,Citywide Medical Group,organization,General Practice,901234585,Citywide Medical Group,CA,true,2025-01-01 00:00:00
+PRV020,1234567909,Dr. Patricia Walker,individual,Urgent Care,901234586,QuickCare Urgent Center,TX,true,2025-01-01 00:00:00

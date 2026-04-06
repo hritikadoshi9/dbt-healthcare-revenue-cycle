@@ -1,0 +1,26 @@
+procedure_code,procedure_description,procedure_category,code_type,standard_charge,rvu_work,rvu_practice,rvu_malpractice,_loaded_at
+99213,Office visit - established patient level 3,evaluation,cpt,150.00,1.30,1.08,0.07,2025-01-01 00:00:00
+99214,Office visit - established patient level 4,evaluation,cpt,225.00,1.92,1.52,0.10,2025-01-01 00:00:00
+99215,Office visit - established patient level 5,evaluation,cpt,325.00,2.80,2.12,0.14,2025-01-01 00:00:00
+99203,Office visit - new patient level 3,evaluation,cpt,200.00,1.60,1.42,0.09,2025-01-01 00:00:00
+99204,Office visit - new patient level 4,evaluation,cpt,300.00,2.60,1.90,0.13,2025-01-01 00:00:00
+99281,Emergency department visit level 1,evaluation,cpt,175.00,0.50,0.80,0.05,2025-01-01 00:00:00
+99283,Emergency department visit level 3,evaluation,cpt,425.00,1.60,1.80,0.15,2025-01-01 00:00:00
+99285,Emergency department visit level 5,evaluation,cpt,850.00,3.80,3.20,0.35,2025-01-01 00:00:00
+71046,Chest X-ray 2 views,diagnostic,cpt,275.00,0.18,0.64,0.03,2025-01-01 00:00:00
+93000,Electrocardiogram complete,diagnostic,cpt,125.00,0.17,0.38,0.02,2025-01-01 00:00:00
+80053,Comprehensive metabolic panel,diagnostic,cpt,95.00,0.00,0.00,0.00,2025-01-01 00:00:00
+85025,Complete blood count with differential,diagnostic,cpt,65.00,0.00,0.00,0.00,2025-01-01 00:00:00
+90834,Psychotherapy 45 minutes,therapeutic,cpt,175.00,1.50,0.92,0.07,2025-01-01 00:00:00
+97110,Therapeutic exercises 15 min,therapeutic,cpt,85.00,0.45,0.42,0.01,2025-01-01 00:00:00
+97140,Manual therapy 15 min,therapeutic,cpt,90.00,0.43,0.40,0.01,2025-01-01 00:00:00
+27447,Total knee replacement,surgical,cpt,45000.00,22.19,18.76,3.24,2025-01-01 00:00:00
+27130,Total hip replacement,surgical,cpt,42000.00,20.72,17.89,2.98,2025-01-01 00:00:00
+43239,Upper GI endoscopy with biopsy,surgical,cpt,3500.00,3.56,4.21,0.34,2025-01-01 00:00:00
+45380,Colonoscopy with biopsy,surgical,cpt,3200.00,3.36,4.07,0.30,2025-01-01 00:00:00
+99395,Preventive visit established 18-39,preventive,cpt,280.00,1.50,1.70,0.08,2025-01-01 00:00:00
+99396,Preventive visit established 40-64,preventive,cpt,300.00,1.75,1.82,0.09,2025-01-01 00:00:00
+99397,Preventive visit established 65+,preventive,cpt,325.00,1.90,1.95,0.10,2025-01-01 00:00:00
+J0585,Botulinum toxin type A injection,therapeutic,hcpcs,1200.00,0.00,0.14,0.02,2025-01-01 00:00:00
+G0438,Annual wellness visit initial,preventive,hcpcs,275.00,2.43,1.82,0.10,2025-01-01 00:00:00
+G0439,Annual wellness visit subsequent,preventive,hcpcs,225.00,1.50,1.32,0.08,2025-01-01 00:00:00

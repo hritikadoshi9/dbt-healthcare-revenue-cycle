@@ -1,0 +1,102 @@
+version: 2
+
+models:
+  - name: stg_claims
+    description: >
+      Cleaned and standardized insurance claims from the raw source.
+      Each row represents a claim line item.
+    columns:
+      - name: claim_id
+        description: Unique claim identifier
+        tests:
+          - not_null
+      - name: claim_line_id
+        description: Unique claim line identifier
+        tests:
+          - not_null
+      - name: billed_amount
+        description: Amount billed by the provider
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 999999
+      - name: claim_status
+        description: Current claim status
+        tests:
+          - accepted_values:
+              values: ['submitted', 'accepted', 'denied', 'paid', 'appealed']
+      - name: service_date
+        tests:
+          - not_null
+
+  - name: stg_denials
+    description: >
+      Cleaned denial records with CARC/RARC codes and appeal tracking.
+    columns:
+      - name: denial_id
+        tests:
+          - not_null
+          - unique
+      - name: claim_id
+        tests:
+          - not_null
+      - name: denied_amount
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: appeal_status
+        tests:
+          - accepted_values:
+              values: ['none', 'submitted', 'in_review', 'overturned', 'upheld']
+
+  - name: stg_payments
+    description: >
+      Cleaned payment and remittance records from payers.
+    columns:
+      - name: payment_id
+        tests:
+          - not_null
+          - unique
+      - name: paid_amount
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: payment_method
+        tests:
+          - accepted_values:
+              values: ['eft', 'check', 'virtual_card']
+
+  - name: stg_providers
+    description: Cleaned provider master data.
+    columns:
+      - name: provider_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_payers
+    description: Cleaned payer/insurance master data.
+    columns:
+      - name: payer_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_patients
+    description: Cleaned patient demographic data.
+    columns:
+      - name: patient_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_procedures
+    description: Cleaned procedure code reference data.
+    columns:
+      - name: procedure_code
+        tests:
+          - not_null
+          - unique

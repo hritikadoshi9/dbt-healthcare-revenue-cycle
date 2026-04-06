@@ -1,0 +1,149 @@
+version: 2
+
+models:
+  # ── Dimensions ──────────────────────────────────────
+  - name: dim_providers
+    description: >
+      Provider dimension with specialty classifications and practice details.
+      Surrogate key: provider_key.
+    columns:
+      - name: provider_key
+        tests: [not_null, unique]
+      - name: provider_id
+        tests: [not_null, unique]
+      - name: specialty_category
+        tests:
+          - accepted_values:
+              values: ['Primary Care', 'Specialty', 'Surgical', 'Emergency', 'Ancillary', 'Other']
+
+  - name: dim_payers
+    description: >
+      Payer dimension with contract details and reimbursement tiers.
+    columns:
+      - name: payer_key
+        tests: [not_null, unique]
+      - name: payer_id
+        tests: [not_null, unique]
+      - name: reimbursement_tier
+        tests:
+          - accepted_values:
+              values: ['tier_1_high', 'tier_2_medium', 'tier_3_low', 'tier_4_minimal']
+
+  - name: dim_procedures
+    description: >
+      Procedure dimension with CPT/HCPCS codes, fee schedules, and RVU complexity.
+    columns:
+      - name: procedure_key
+        tests: [not_null, unique]
+      - name: procedure_code
+        tests: [not_null, unique]
+      - name: standard_charge
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+
+  - name: dim_patients
+    description: >
+      Patient dimension with demographics and coverage information.
+      Age groups are pre-computed for HIPAA-safe analytics.
+    columns:
+      - name: patient_key
+        tests: [not_null, unique]
+      - name: patient_id
+        tests: [not_null, unique]
+
+  # ── Facts ───────────────────────────────────────────
+  - name: fct_claims
+    description: >
+      Claim-level fact table combining submission, payment, and denial data
+      into a single analytical record per claim line item. Contains financial
+      metrics, lifecycle timing, and status flags.
+    columns:
+      - name: claim_key
+        tests: [not_null, unique]
+      - name: billed_amount
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: collection_rate_pct
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 200
+
+  - name: fct_denials
+    description: >
+      Denial-level fact table with reason codes mapped to analytical categories,
+      appeal tracking, timing metrics, and impact tiers.
+    columns:
+      - name: denial_key
+        tests: [not_null, unique]
+      - name: denial_impact_tier
+        tests:
+          - accepted_values:
+              values: ['critical', 'high', 'medium', 'low']
+
+  - name: fct_payments
+    description: >
+      Payment-level fact table with reimbursement analysis,
+      contract variance tracking, and payment classification.
+    columns:
+      - name: payment_key
+        tests: [not_null, unique]
+      - name: payment_classification
+        tests:
+          - accepted_values:
+              values: ['full_payment', 'partial_payment', 'zero_payment']
+
+  - name: fct_aging
+    description: >
+      Accounts receivable aging snapshot for unpaid, non-denied claims.
+      Uses configurable aging buckets defined in dbt_project.yml vars.
+    columns:
+      - name: aging_key
+        tests: [not_null, unique]
+      - name: outstanding_balance
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+      - name: collection_risk_level
+        tests:
+          - accepted_values:
+              values: ['critical', 'high', 'medium', 'low']
+
+  # ── Marts ───────────────────────────────────────────
+  - name: mart_denial_summary
+    description: >
+      Monthly denial analytics aggregated by payer and denial category.
+      Includes appeal success rates, recovery amounts, and timing benchmarks.
+    columns:
+      - name: denial_summary_key
+        tests: [not_null, unique]
+
+  - name: mart_payer_performance
+    description: >
+      Monthly payer performance scorecard with collection rates, denial rates,
+      payment timing, and a composite payer performance score.
+    columns:
+      - name: payer_performance_key
+        tests: [not_null, unique]
+      - name: payer_performance_score
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+  - name: mart_revenue_kpis
+    description: >
+      Monthly revenue cycle KPIs by provider including gross/net collection rates,
+      first pass resolution, clean claim rate, AR aging, and a composite
+      revenue health score.
+    columns:
+      - name: revenue_kpi_key
+        tests: [not_null, unique]
+      - name: revenue_health_score
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
