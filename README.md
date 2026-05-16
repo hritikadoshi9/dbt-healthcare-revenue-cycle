@@ -1,10 +1,67 @@
 # dbt-healthcare-revenue-cycle
 
-A production-ready, open-source **dbt package** for healthcare revenue cycle analytics. Provides reusable dimensional models for **claims processing**, **denial tracking**, **reimbursement analysis**, and **AR aging** — ready to install on Snowflake, BigQuery, Redshift, or PostgreSQL.
+A production-ready **dbt project** for healthcare revenue cycle analytics — 18 models, 86 tests, a Streamlit dashboard, and a full CI/CD pipeline. Turns raw insurance claims data into trusted KPIs for denial management, payer performance, and AR aging.
+
+**Stack:** dbt · PostgreSQL · Python · Streamlit · Plotly · GitHub Actions
 
 ---
 
-## Why this package?
+## Quick Start (run it locally in ~5 minutes)
+
+### Prerequisites
+- Python 3.10+
+- PostgreSQL 14+ running locally (`host=127.0.0.1, port=5432, dbname=dbt, user=dbt, password=dbt`)
+- Node.js (optional, for rebuilding the slide deck)
+
+### 1. Clone and install dependencies
+
+```bash
+git clone https://github.com/hritikadoshi9/dbt-healthcare-revenue-cycle.git
+cd dbt-healthcare-revenue-cycle
+pip install -r requirements.txt
+```
+
+### 2. Configure dbt profile
+
+Create `~/.dbt/profiles.yml`:
+
+```yaml
+healthcare_revenue_cycle:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: 127.0.0.1
+      port: 5432
+      dbname: dbt
+      user: dbt
+      password: dbt
+      schema: public
+      threads: 4
+```
+
+### 3. Run the full pipeline
+
+```bash
+dbt deps          # Install dbt packages (dbt_utils, dbt_expectations)
+dbt seed          # Load denial code mappings + payer contracts
+dbt run           # Build all 18 models
+dbt test          # Run all 86 data quality tests
+```
+
+Expected output: `86 passed, 0 warnings, 0 errors`
+
+### 4. Launch the dashboard
+
+```bash
+streamlit run dashboard.py
+```
+
+Open `http://localhost:8501` — you'll see live KPIs pulled from the marts.
+
+---
+
+## Why this project?
 
 Healthcare revenue cycle management generates millions of records monthly across claims, denials, payments, and aging receivables. Most analytics teams rebuild the same dimensional models from scratch. This package provides:
 
@@ -64,7 +121,7 @@ Healthcare revenue cycle management generates millions of records monthly across
 
 ```yaml
 packages:
-  - git: "https://github.com/yourusername/dbt-healthcare-revenue-cycle.git"
+  - git: "https://github.com/hritikadoshi9/dbt-healthcare-revenue-cycle.git"
     revision: v1.0.0
 ```
 
@@ -158,6 +215,24 @@ The package includes 50+ tests across three categories:
 - `assert_denial_after_submission` — Denial date must follow submission date
 - `assert_denied_claims_have_denials` — Every denied claim has a denial record
 - `assert_aging_only_open_claims` — AR aging only contains open receivables
+
+---
+
+## Dashboard
+
+The included `dashboard.py` connects directly to the PostgreSQL marts and renders a live Streamlit dashboard with:
+
+- **6 KPI cards** — Total Charges, Net Collections, Collection Rate, Denial Rate, AR Balance, Health Score
+- **Revenue trend** — Monthly gross charges vs. net collections with collection rate overlay
+- **AR aging donut** — Balance breakdown across 0-30, 31-60, 61-90, 91-120, 121+ day buckets
+- **Denial analysis** — Denied amount by category (colored by appeal overturn rate) + trend over time
+- **Payer performance** — Scatter plot (denial rate vs collection rate) + performance score bar chart
+- **Provider leaderboard** — Sortable table with health score color coding
+
+```bash
+streamlit run dashboard.py
+# → http://localhost:8501
+```
 
 ---
 
